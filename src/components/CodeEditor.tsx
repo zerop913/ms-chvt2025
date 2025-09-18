@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { MasterClassStep } from "@/types/masterclass";
 
 interface CodeEditorProps {
@@ -633,6 +633,8 @@ export function CodeEditor({ step, stepIndex, onComplete }: CodeEditorProps) {
   const [code, setCode] = useState(codeTemplates[stepIndex] || "");
   const [isCompleted, setIsCompleted] = useState(false);
   const [completionPercentage, setCompletionPercentage] = useState(0);
+  const [isSolutionShown, setIsSolutionShown] = useState(false);
+  const solutionTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const calculateCompletion = useCallback(
     (currentCode: string) => {
@@ -671,17 +673,44 @@ export function CodeEditor({ step, stepIndex, onComplete }: CodeEditorProps) {
         onComplete(percentage);
       }
     },
-    [stepIndex, onComplete, code]
+    [stepIndex, onComplete] // Убираем code из зависимостей
   );
 
+  // Функция для очистки таймера
+  const clearSolutionTimer = () => {
+    if (solutionTimerRef.current) {
+      clearTimeout(solutionTimerRef.current);
+      solutionTimerRef.current = null;
+    }
+  };
+
   useEffect(() => {
-    setCode(codeTemplates[stepIndex] || "");
-    setIsCompleted(false);
-    calculateCompletion(codeTemplates[stepIndex] || "");
-  }, [stepIndex, calculateCompletion]);
+    // Не сбрасывать код, если показано решение
+    if (!isSolutionShown) {
+      const template = codeTemplates[stepIndex] || "";
+      setCode(template);
+      setIsCompleted(false);
+      calculateCompletion(template);
+    }
+    // Сбрасываем флаг показа решения при смене шага
+    setIsSolutionShown(false);
+    // Очищаем таймер при смене шага
+    clearSolutionTimer();
+  }, [stepIndex]); // Убираем calculateCompletion и clearSolutionTimer из зависимостей
+
+  // Очистка таймера при размонтировании компонента
+  useEffect(() => {
+    return () => {
+      if (solutionTimerRef.current) {
+        clearTimeout(solutionTimerRef.current);
+      }
+    };
+  }, []); // Убираем зависимости
 
   const handleCodeChange = (value: string) => {
     setCode(value);
+    setIsSolutionShown(false); // Сбрасываем флаг при ручном изменении
+    clearSolutionTimer(); // Очищаем таймер при ручном изменении
     calculateCompletion(value);
   };
 
@@ -689,6 +718,8 @@ export function CodeEditor({ step, stepIndex, onComplete }: CodeEditorProps) {
     setCode(codeTemplates[stepIndex] || "");
     setIsCompleted(false);
     setCompletionPercentage(0);
+    setIsSolutionShown(false);
+    clearSolutionTimer(); // Очищаем таймер при сбросе
   };
 
   const showSolution = () => {
@@ -1387,10 +1418,23 @@ export function CodeEditor({ step, stepIndex, onComplete }: CodeEditorProps) {
     ];
 
     if (solutions[stepIndex]) {
+      // Очищаем предыдущий таймер если он есть
+      clearSolutionTimer();
+      
       setCode(solutions[stepIndex]);
       setCompletionPercentage(100);
       setIsCompleted(true);
+      setIsSolutionShown(true);
       onComplete(100);
+      
+      // Устанавливаем таймер на 5 секунд для автоматического скрытия решения
+      solutionTimerRef.current = setTimeout(() => {
+        setCode(codeTemplates[stepIndex] || "");
+        setIsSolutionShown(false);
+        setIsCompleted(false);
+        setCompletionPercentage(0);
+        calculateCompletion(codeTemplates[stepIndex] || "");
+      }, 5000);
     }
   };
 
