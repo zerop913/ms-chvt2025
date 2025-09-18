@@ -1,13 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { MasterClassStep } from "@/types/masterclass";
 
 interface CodeEditorProps {
   step: MasterClassStep;
   stepIndex: number;
   onComplete: (score: number) => void;
-  currentScore: number;
 }
 
 // Храним исходные функции из module.bsl с пропусками для заполнения
@@ -627,110 +626,59 @@ const codeTemplates = [
         Возврат Ответ;
     КонецПопытки;
     
-КонецФункции
-
-// ==============================================
-// ДОПОЛНИТЕЛЬНЫЕ ФУНКЦИИ ДЛЯ ОПТИМИЗАЦИИ
-// ==============================================
-
-Функция СоздатьОтветОшибки(КодОшибки, ТекстОшибки)
-    Ответ = Новый HTTPСервисОтвет(КодОшибки);
-    Ответ.Заголовки.Вставить("Content-Type", "application/json");
-    
-    ОшибкаJSON = Новый Структура;
-    ОшибкаJSON.Вставить("error", Истина);
-    ОшибкаJSON.Вставить("message", ТекстОшибки);
-    ОшибкаJSON.Вставить("code", КодОшибки);
-    
-    ЗаписьJSON = Новый ЗаписьJSON;
-    ЗаписьJSON.УстановитьСтроку();
-    ЗаписатьJSON(ЗаписьJSON, ОшибкаJSON);
-    СтрокаJSON = ЗаписьJSON.Закрыть();
-    
-    Ответ.УстановитьТелоИзСтроки(СтрокаJSON);
-    
-    Возврат Ответ;
-КонецФункции
-
-Функция СоздатьJSONОтвет(Данные)
-    Ответ = Новый HTTPСервисОтвет(200);
-    Ответ.Заголовки.Вставить("Content-Type", "application/json");
-    
-    ЗаписьJSON = Новый ЗаписьJSON;
-    ЗаписьJSON.УстановитьСтроку();
-    ЗаписатьJSON(ЗаписьJSON, Данные);
-    СтрокаJSON = ЗаписьJSON.Закрыть();
-    
-    Ответ.УстановитьТелоИзСтроки(СтрокаJSON);
-    
-    Возврат Ответ;
-КонецФункции
-
-// ==============================================
-// ПОЗДРАВЛЯЕМ! ВЫ СОЗДАЛИ ПОЛНОЦЕННЫЙ API!
-// ==============================================
-// Теперь вы знаете как:
-// ✅ Создавать HTTP-сервисы в 1С
-// ✅ Работать с JSON
-// ✅ Обрабатывать параметры URL
-// ✅ Валидировать входные данные
-// ✅ Создавать структурированные ответы
-// ✅ Оптимизировать код через вспомогательные функции
-// ✅ Обрабатывать ошибки корректно`,
+КонецФункции`,
 ];
 
-export function CodeEditor({
-  step,
-  stepIndex,
-  onComplete,
-  currentScore,
-}: CodeEditorProps) {
+export function CodeEditor({ step, stepIndex, onComplete }: CodeEditorProps) {
   const [code, setCode] = useState(codeTemplates[stepIndex] || "");
   const [isCompleted, setIsCompleted] = useState(false);
   const [completionPercentage, setCompletionPercentage] = useState(0);
+
+  const calculateCompletion = useCallback(
+    (currentCode: string) => {
+      // Для 6-го шага всегда показываем как завершенное (готовое решение)
+      if (stepIndex === 5) {
+        // stepIndex начинается с 0, поэтому 6-й шаг = индекс 5
+        setCompletionPercentage(100);
+        setIsCompleted(true);
+        onComplete(100);
+        return;
+      }
+
+      const todoCount = (currentCode.match(/TODO:/g) || []).length;
+      const blankCount = (currentCode.match(/___/g) || []).length;
+      const totalGaps = todoCount + blankCount;
+
+      if (totalGaps === 0) {
+        setCompletionPercentage(100);
+        setIsCompleted(true);
+        onComplete(100);
+        return;
+      }
+
+      const currentTodoCount = (code.match(/TODO:/g) || []).length;
+      const currentBlankCount = (code.match(/___/g) || []).length;
+      const currentGaps = currentTodoCount + currentBlankCount;
+
+      const percentage = Math.max(
+        0,
+        ((totalGaps - currentGaps) / totalGaps) * 100
+      );
+      setCompletionPercentage(percentage);
+
+      if (percentage >= 80) {
+        setIsCompleted(true);
+        onComplete(percentage);
+      }
+    },
+    [stepIndex, onComplete, code]
+  );
 
   useEffect(() => {
     setCode(codeTemplates[stepIndex] || "");
     setIsCompleted(false);
     calculateCompletion(codeTemplates[stepIndex] || "");
-  }, [stepIndex]);
-
-  const calculateCompletion = (currentCode: string) => {
-    // Для 6-го шага всегда показываем как завершенное (готовое решение)
-    if (stepIndex === 5) {
-      // stepIndex начинается с 0, поэтому 6-й шаг = индекс 5
-      setCompletionPercentage(100);
-      setIsCompleted(true);
-      onComplete(100);
-      return;
-    }
-
-    const todoCount = (currentCode.match(/TODO:/g) || []).length;
-    const blankCount = (currentCode.match(/___/g) || []).length;
-    const totalGaps = todoCount + blankCount;
-
-    if (totalGaps === 0) {
-      setCompletionPercentage(100);
-      setIsCompleted(true);
-      onComplete(100);
-      return;
-    }
-
-    const currentTodoCount = (code.match(/TODO:/g) || []).length;
-    const currentBlankCount = (code.match(/___/g) || []).length;
-    const currentGaps = currentTodoCount + currentBlankCount;
-
-    const percentage = Math.max(
-      0,
-      ((totalGaps - currentGaps) / totalGaps) * 100
-    );
-    setCompletionPercentage(percentage);
-
-    if (percentage >= 80) {
-      setIsCompleted(true);
-      onComplete(percentage);
-    }
-  };
+  }, [stepIndex, calculateCompletion]);
 
   const handleCodeChange = (value: string) => {
     setCode(value);

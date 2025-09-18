@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { masterClassContent } from "@/constants/masterClassSteps";
 import { CodeEditor } from "@/components/CodeEditor";
-import { MasterClassStep } from "@/types/masterclass";
 
 export default function MasterClassPage() {
   const [currentStep, setCurrentStep] = useState(0);
@@ -166,7 +165,6 @@ export default function MasterClassPage() {
             step={masterClassContent[currentStep]}
             stepIndex={currentStep}
             onComplete={(score) => handleStepComplete(currentStep, score)}
-            currentScore={progress[currentStep]}
           />
 
           {/* Navigation Buttons */}

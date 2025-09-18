@@ -1,5 +1,3 @@
-import { masterClassSteps } from "@/data/masterclass/steps";
-
 export interface CodeGenerationResult {
   fullCode: string;
   functions: string[];
@@ -11,68 +9,27 @@ export interface CodeGenerationResult {
 }
 
 export function generateFinalCode(
-  userAnswers: Record<string, any>
+  _userAnswers: Record<string, string | number | boolean>
 ): CodeGenerationResult {
-  const functions: string[] = [];
-  let completedSteps = 0;
-
-  // Генерируем код для каждого шага
-  masterClassSteps.forEach((step, stepIndex) => {
-    if (step.id === "final-code") return; // Пропускаем финальный шаг
-
-    let functionCode = step.codeTemplate;
-    let stepCompleted = true;
-
-    // Заменяем плейсхолдеры на реальные значения
-    step.interactiveFields.forEach((field) => {
-      const userValue = userAnswers[`${stepIndex}_${field.id}`];
-      const placeholder = `[${field.id}]`;
-
-      if (functionCode.includes(placeholder)) {
-        if (userValue) {
-          functionCode = functionCode.replace(
-            new RegExp(`\\[${field.id}\\]`, "g"),
-            userValue
-          );
-        } else {
-          stepCompleted = false;
-          functionCode = functionCode.replace(
-            new RegExp(`\\[${field.id}\\]`, "g"),
-            `/* ЗАПОЛНИТЕ: ${field.label || field.id} */`
-          );
-        }
-      }
-    });
-
-    if (stepCompleted) {
-      completedSteps++;
-    }
-
-    functions.push(
-      `// ==========================================\n// ${step.title}\n// ==========================================\n\n${functionCode}\n`
-    );
-  });
-
-  // Собираем полный код
+  // Заглушка для генератора кода
+  // TODO: Реализовать генерацию кода на основе текущей структуры данных
+  
   const header = `// ==========================================
 // Модуль API для работы с категориями и товарами
 // Создан с помощью интерактивного мастер-класса CHVT
 // Дата создания: ${new Date().toLocaleDateString("ru-RU")}
 // ==========================================
 
+// Код будет сгенерирован на основе ваших ответов
 `;
 
-  const fullCode = header + functions.join("\n");
-
-  const totalLines = fullCode.split("\n").length;
-
   return {
-    fullCode,
-    functions,
+    fullCode: header,
+    functions: [],
     summary: {
-      totalLines,
-      functionCount: functions.length,
-      completedSteps,
+      totalLines: header.split("\n").length,
+      functionCount: 0,
+      completedSteps: 0,
     },
   };
 }
@@ -111,7 +68,7 @@ export function copyToClipboard(text: string): Promise<boolean> {
         const successful = document.execCommand("copy");
         document.body.removeChild(textArea);
         resolve(successful);
-      } catch (err) {
+      } catch {
         document.body.removeChild(textArea);
         resolve(false);
       }

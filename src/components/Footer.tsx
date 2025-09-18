@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 export default function Footer() {
   return (
     <footer className="w-full py-4 border-t border-gray-200 bg-gray-50">
@@ -21,12 +23,11 @@ export default function Footer() {
               href="https://ivan-smolin.ru"
             >
               <div>
-                <img
+                <Image
                   alt=""
                   loading="lazy"
-                  width="14"
-                  height="14"
-                  decoding="async"
+                  width={14}
+                  height={14}
                   className="w-3.5 h-3.5 filter brightness-0 opacity-60 group-hover:opacity-100 transition-opacity duration-200"
                   src="https://ivan-smolin.ru/favicon.svg"
                 />

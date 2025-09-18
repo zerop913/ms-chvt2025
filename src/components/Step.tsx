@@ -1,17 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { MasterClassStep, Task } from "@/types/masterclass";
+import { MasterClassStep } from "@/types/masterclass";
 import { TaskComponent } from "./TaskComponent";
 
 interface StepProps {
   step: MasterClassStep;
-  stepIndex: number;
   onComplete: (score: number) => void;
-  currentScore: number;
 }
 
-export function Step({ step, stepIndex, onComplete, currentScore }: StepProps) {
+export function Step({ step, onComplete }: StepProps) {
   const [completedTasks, setCompletedTasks] = useState<Set<string>>(new Set());
   const [taskScores, setTaskScores] = useState<Map<string, number>>(new Map());
   const [showHints, setShowHints] = useState(false);

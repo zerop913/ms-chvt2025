@@ -32,7 +32,7 @@ export interface Choice {
 
 export interface Task {
   id: string;
-  type: 'choice' | 'input' | 'code';
+  type: "choice" | "input" | "code";
   question: string;
   choices?: Choice[];
   placeholder?: string;
@@ -91,6 +91,6 @@ export interface DragDropItem {
 
 export interface UserAnswer {
   fieldId: string;
-  value: any;
+  value: string | number | boolean;
   isCorrect?: boolean;
 }
