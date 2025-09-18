@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Task, Choice } from "@/types/masterclass";
+import { Task, Choice } from "@/types/masterclass-new";
+import { Star, Lightbulb, CheckCircle, XCircle } from "lucide-react";
 
 interface TaskComponentProps {
   task: Task;
@@ -32,15 +33,12 @@ export function TaskComponent({
       );
       correct = selectedChoice?.isCorrect || false;
     } else if (task.type === "input" || task.type === "code") {
-      // Простая проверка по содержанию ключевых слов
       const userAnswer = userInput.toLowerCase().trim();
       const correctAnswer = task.correctAnswer?.toLowerCase().trim() || "";
 
-      // Проверяем точное совпадение или содержание ключевых слов
       if (userAnswer === correctAnswer) {
         correct = true;
       } else {
-        // Проверяем наличие ключевых слов из правильного ответа
         const keywords = correctAnswer
           .split(/[,\s]+/)
           .filter((word) => word.length > 2);
@@ -48,7 +46,7 @@ export function TaskComponent({
         const matchedKeywords = keywords.filter((keyword) =>
           userWords.some((userWord) => userWord.includes(keyword))
         );
-        correct = matchedKeywords.length >= keywords.length * 0.7; // 70% совпадений
+        correct = matchedKeywords.length >= keywords.length * 0.7;
       }
     }
 
@@ -74,30 +72,35 @@ export function TaskComponent({
         isCompleted ? "border-green-500 bg-green-50" : "border-gray-300"
       }`}
     >
-      {/* Task Header */}
       <div className={`${taskHeaderClass} p-4`}>
         <div className="flex items-center justify-between">
-          <h4 className="font-semibold text-lg">
-            {isBonus ? "⭐ Бонус" : `Задание ${taskIndex}`}
+          <h4 className="font-semibold text-lg flex items-center">
+            {isBonus ? (
+              <>
+                <Star className="w-5 h-5 mr-2" />
+                Бонус
+              </>
+            ) : (
+              `Задание ${taskIndex}`
+            )}
           </h4>
           <div className="flex items-center space-x-2">
             <span className="bg-white bg-opacity-20 px-2 py-1 rounded text-sm">
               {task.points} баллов
             </span>
             {isCompleted && (
-              <span className="bg-green-500 text-white px-2 py-1 rounded text-sm">
-                ✓ Выполнено
+              <span className="bg-green-500 text-white px-2 py-1 rounded text-sm flex items-center">
+                <CheckCircle className="w-4 h-4 mr-1" />
+                Выполнено
               </span>
             )}
           </div>
         </div>
       </div>
 
-      {/* Task Content */}
       <div className="p-4">
         <p className="text-gray-800 mb-4 font-medium">{task.question}</p>
 
-        {/* Multiple Choice */}
         {task.type === "choice" && task.choices && (
           <div className="space-y-3">
             {task.choices.map((choice: Choice) => (
@@ -130,7 +133,6 @@ export function TaskComponent({
           </div>
         )}
 
-        {/* Input/Code */}
         {(task.type === "input" || task.type === "code") && (
           <div className="space-y-3">
             {task.type === "code" ? (
@@ -155,16 +157,17 @@ export function TaskComponent({
           </div>
         )}
 
-        {/* Hint */}
         {task.hint && (
           <div className="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-            <p className="text-yellow-800 text-sm">
-              <span className="font-medium">💡 Подсказка:</span> {task.hint}
+            <p className="text-yellow-800 text-sm flex items-start">
+              <Lightbulb className="w-4 h-4 mr-2 mt-0.5 flex-shrink-0" />
+              <span>
+                <span className="font-medium">Подсказка:</span> {task.hint}
+              </span>
             </p>
           </div>
         )}
 
-        {/* Submit Button */}
         {!showResult && (
           <div className="mt-4">
             <button
@@ -181,7 +184,6 @@ export function TaskComponent({
           </div>
         )}
 
-        {/* Result */}
         {showResult && (
           <div
             className={`mt-4 p-4 rounded-lg ${
@@ -193,11 +195,21 @@ export function TaskComponent({
             <div className="flex items-center justify-between">
               <div>
                 <p
-                  className={`font-medium ${
+                  className={`font-medium flex items-center ${
                     isCorrect ? "text-green-800" : "text-red-800"
                   }`}
                 >
-                  {isCorrect ? "✅ Правильно!" : "❌ Неправильно"}
+                  {isCorrect ? (
+                    <>
+                      <CheckCircle className="w-5 h-5 mr-2" />
+                      Правильно!
+                    </>
+                  ) : (
+                    <>
+                      <XCircle className="w-5 h-5 mr-2" />
+                      Неправильно
+                    </>
+                  )}
                 </p>
                 {!isCorrect && task.correctAnswer && (
                   <p className="text-red-700 mt-2">

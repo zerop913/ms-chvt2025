@@ -1,8 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { MasterClassStep } from "@/types/masterclass";
-import { TaskComponent } from "./TaskComponent";
+import { MasterClassStep, Task } from "@/types/masterclass-new";
+import { TaskComponent } from "../common/TaskComponent";
+import {
+  Target,
+  Star,
+  Lightbulb,
+  CheckCircle,
+  Eye,
+  EyeOff,
+} from "lucide-react";
 
 interface StepProps {
   step: MasterClassStep;
@@ -28,7 +36,6 @@ export function Step({ step, onComplete }: StepProps) {
     newTaskScores.set(taskId, isCorrect ? points : 0);
     setTaskScores(newTaskScores);
 
-    // Calculate total score
     const totalScore = Array.from(newTaskScores.values()).reduce(
       (sum, score) => sum + score,
       0
@@ -37,7 +44,7 @@ export function Step({ step, onComplete }: StepProps) {
   };
 
   const totalPossibleScore =
-    step.tasks.reduce((sum, task) => sum + task.points, 0) +
+    step.tasks.reduce((sum: number, task: Task) => sum + task.points, 0) +
     (step.bonusTask ? step.bonusTask.points : 0);
   const currentTotalScore = Array.from(taskScores.values()).reduce(
     (sum, score) => sum + score,
@@ -48,7 +55,6 @@ export function Step({ step, onComplete }: StepProps) {
 
   return (
     <div className="bg-white rounded-xl shadow-lg p-8">
-      {/* Step Header */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-3xl font-bold text-gray-900">
@@ -61,7 +67,6 @@ export function Step({ step, onComplete }: StepProps) {
 
         <p className="text-lg text-gray-700 mb-4">{step.description}</p>
 
-        {/* Progress for this step */}
         <div className="bg-gray-200 rounded-full h-2 mb-4">
           <div
             className="bg-blue-600 h-2 rounded-full transition-all duration-300"
@@ -70,13 +75,12 @@ export function Step({ step, onComplete }: StepProps) {
         </div>
       </div>
 
-      {/* Theory Section */}
       <div className="mb-8">
         <h3 className="text-xl font-semibold text-gray-900 mb-4">
           📚 Теоретическая часть
         </h3>
         <ul className="bg-blue-50 p-4 rounded-lg space-y-2">
-          {step.theory.map((item, index) => (
+          {step.theory.map((item: string, index: number) => (
             <li key={index} className="flex items-start">
               <span className="text-blue-600 mr-2">•</span>
               <span className="text-gray-700">{item}</span>
@@ -85,7 +89,6 @@ export function Step({ step, onComplete }: StepProps) {
         </ul>
       </div>
 
-      {/* Code Example */}
       {step.codeExample && (
         <div className="mb-8">
           <h3 className="text-xl font-semibold text-gray-900 mb-4">
@@ -99,13 +102,13 @@ export function Step({ step, onComplete }: StepProps) {
         </div>
       )}
 
-      {/* Tasks Section */}
       <div className="mb-8">
-        <h3 className="text-xl font-semibold text-gray-900 mb-4">
-          🎯 Практические задания
+        <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+          <Target className="w-6 h-6 mr-2 text-blue-600" />
+          Практические задания
         </h3>
         <div className="space-y-6">
-          {step.tasks.map((task, index) => (
+          {step.tasks.map((task: Task, index: number) => (
             <TaskComponent
               key={task.id}
               task={task}
@@ -119,11 +122,11 @@ export function Step({ step, onComplete }: StepProps) {
         </div>
       </div>
 
-      {/* Bonus Task */}
       {step.bonusTask && (
         <div className="mb-8">
-          <h3 className="text-xl font-semibold text-yellow-800 mb-4">
-            ⭐ Бонусное задание
+          <h3 className="text-xl font-semibold text-yellow-800 mb-4 flex items-center">
+            <Star className="w-6 h-6 mr-2" />
+            Бонусное задание
           </h3>
           <TaskComponent
             task={step.bonusTask}
@@ -141,25 +144,43 @@ export function Step({ step, onComplete }: StepProps) {
         </div>
       )}
 
-      {/* Help Section */}
       <div className="border-t pt-8">
         <div className="flex gap-4 mb-4">
           <button
             onClick={() => setShowHints(!showHints)}
-            className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition-colors"
+            className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition-colors flex items-center"
           >
-            {showHints ? "Скрыть подсказки" : "💡 Показать подсказки"}
+            {showHints ? (
+              <>
+                <EyeOff className="w-4 h-4 mr-2" />
+                Скрыть подсказки
+              </>
+            ) : (
+              <>
+                <Lightbulb className="w-4 h-4 mr-2" />
+                Показать подсказки
+              </>
+            )}
           </button>
 
           <button
             onClick={() => setShowAnswers(!showAnswers)}
-            className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors"
+            className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors flex items-center"
           >
-            {showAnswers ? "Скрыть ответы" : "✅ Показать ответы"}
+            {showAnswers ? (
+              <>
+                <EyeOff className="w-4 h-4 mr-2" />
+                Скрыть ответы
+              </>
+            ) : (
+              <>
+                <CheckCircle className="w-4 h-4 mr-2" />
+                Показать ответы
+              </>
+            )}
           </button>
         </div>
 
-        {/* Hints */}
         {showHints && (
           <div className="bg-yellow-50 p-4 rounded-lg mb-4">
             <h4 className="font-semibold text-yellow-800 mb-2">
@@ -176,7 +197,6 @@ export function Step({ step, onComplete }: StepProps) {
           </div>
         )}
 
-        {/* Answers */}
         {showAnswers && (
           <div className="bg-red-50 p-4 rounded-lg">
             <h4 className="font-semibold text-red-800 mb-2">✅ Ответы:</h4>
@@ -193,3 +213,5 @@ export function Step({ step, onComplete }: StepProps) {
     </div>
   );
 }
+
+export default Step;

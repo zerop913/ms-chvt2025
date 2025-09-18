@@ -39,8 +39,9 @@ const rajdhani = Rajdhani({
 });
 
 export const metadata: Metadata = {
-  title: "AI Voice Assistant | ЧВТ 2025",
-  description: "Революционная разработка голосового ассистента для медицины",
+  title: "ЧВТ 2025 - Мастер-класс по HTTP-сервисам в 1С",
+  description:
+    "Мастер-класс по разработке HTTP-сервисов в 1С. Изучите создание RESTful API и интеграцию с внешними системами.",
 };
 
 export default function RootLayout({

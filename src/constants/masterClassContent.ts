@@ -1,4 +1,4 @@
-import { MasterClassContent } from "../types/masterclass";
+import { MasterClassContent } from "../types/masterclass-new";
 
 export const masterClassContent: MasterClassContent = {
   title: "О МАСТЕР-КЛАССЕ",

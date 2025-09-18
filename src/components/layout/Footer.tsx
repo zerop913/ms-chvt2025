@@ -4,21 +4,19 @@ import Image from "next/image";
 
 export default function Footer() {
   return (
-    <footer className="w-full py-4 border-t border-gray-200 bg-gray-50">
+    <footer className="w-full py-3 lg:py-4 border-t border-gray-200 bg-gray-50">
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between">
-          {/* Copyright */}
-          <div className="text-sm text-gray-600">
+        <div className="flex flex-col sm:flex-row items-center justify-between space-y-2 sm:space-y-0">
+          <div className="text-xs sm:text-sm text-gray-600 text-center sm:text-left">
             &copy; Чемпионат Высоких Технологий 2025
           </div>
 
-          {/* Made by */}
-          <div className="flex items-center gap-3 text-sm">
+          <div className="flex items-center gap-2 lg:gap-3 text-xs sm:text-sm">
             <span className="text-gray-500">made by</span>
             <a
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors duration-200"
+              className="group flex items-center gap-1.5 lg:gap-2 text-gray-600 hover:text-gray-900 transition-colors duration-200"
               aria-label="Перейти на сайт разработчика Ivan Smolin"
               href="https://ivan-smolin.ru"
             >
@@ -28,7 +26,7 @@ export default function Footer() {
                   loading="lazy"
                   width={14}
                   height={14}
-                  className="w-3.5 h-3.5 filter brightness-0 opacity-60 group-hover:opacity-100 transition-opacity duration-200"
+                  className="w-3 h-3 lg:w-3.5 lg:h-3.5 filter brightness-0 opacity-60 group-hover:opacity-100 transition-opacity duration-200"
                   src="https://ivan-smolin.ru/favicon.svg"
                 />
               </div>

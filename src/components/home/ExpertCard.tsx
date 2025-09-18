@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Expert } from "../types/masterclass";
+import { Expert } from "../../types/masterclass-new";
 
 interface ExpertCardProps {
   expert: Expert;
@@ -34,22 +34,19 @@ export default function ExpertCard({
       onMouseEnter={() => onHover(expert.id)}
       onMouseLeave={() => onHover(null)}
     >
-      {/* ЧВТ Style Expert Card */}
       <div
-        className={`h-64 bg-gradient-to-br from-chvt-black-900 to-chvt-black-800 rounded-lg transition-all duration-300 hover:shadow-xl overflow-hidden ${
+        className={`h-48 sm:h-56 lg:h-64 bg-gradient-to-br from-chvt-black-900 to-chvt-black-800 rounded-lg transition-all duration-300 hover:shadow-xl overflow-hidden ${
           isActive
             ? "shadow-xl shadow-chvt-orange-500/30 ring-2 ring-chvt-orange-500/50"
             : "hover:shadow-chvt-orange-500/20"
         }`}
       >
-        {/* Orange Accent Line - Inside the card */}
         <div
           className={`h-1 bg-chvt-gradient transition-all duration-500 ${
             isActive ? "opacity-100" : "opacity-60 group-hover:opacity-100"
           }`}
         ></div>
 
-        {/* Chevron Pattern Background */}
         <div className="absolute inset-0 top-1 opacity-10">
           <div
             className="w-full h-full bg-gradient-to-r from-chvt-orange-500 to-chvt-orange-600"
@@ -60,21 +57,18 @@ export default function ExpertCard({
           ></div>
         </div>
 
-        {/* Card Content */}
-        <div className="relative z-10 h-full p-6 pt-5 flex flex-col">
-          {/* Role Badge */}
-          <div className="mb-4">
-            <div className="inline-flex items-center space-x-2">
-              <div className="w-2 h-2 bg-chvt-orange-500 rounded-full"></div>
-              <span className="text-chvt-orange-400 text-sm font-mono font-bold uppercase tracking-wider">
+        <div className="relative z-10 h-full p-3 sm:p-4 lg:p-6 pt-3 sm:pt-4 lg:pt-5 flex flex-col">
+          <div className="mb-3 lg:mb-4">
+            <div className="inline-flex items-center space-x-1 lg:space-x-2">
+              <div className="w-1.5 h-1.5 lg:w-2 lg:h-2 bg-chvt-orange-500 rounded-full"></div>
+              <span className="text-chvt-orange-400 text-xs lg:text-sm font-mono font-bold uppercase tracking-wider">
                 {expert.role}
               </span>
             </div>
           </div>
-          {/* Expert Name */}
-          <div className="mb-4">
+          <div className="mb-3 lg:mb-4">
             <h3
-              className={`font-orbitron text-xl font-bold leading-tight transition-colors duration-300 ${
+              className={`font-orbitron text-base sm:text-lg lg:text-xl font-bold leading-tight transition-colors duration-300 ${
                 isActive ? "text-white" : "text-gray-200 group-hover:text-white"
               }`}
             >
@@ -82,15 +76,13 @@ export default function ExpertCard({
             </h3>
           </div>
 
-          {/* Spacer */}
           <div className="flex-1"></div>
-          {/* Bottom Tech Element */}
           <div className="flex items-center justify-between">
             <div className="flex space-x-1">
               {[...Array(3)].map((_, i) => (
                 <div
                   key={i}
-                  className={`w-1 h-6 rounded-full transition-all duration-300 ${
+                  className={`w-1 h-4 lg:h-6 rounded-full transition-all duration-300 ${
                     isActive
                       ? "bg-chvt-orange-500"
                       : "bg-gray-600 group-hover:bg-chvt-orange-500"
@@ -100,7 +92,7 @@ export default function ExpertCard({
             </div>
 
             {isActive && (
-              <span className="text-chvt-orange-400 text-xs font-mono uppercase tracking-wider">
+              <span className="text-chvt-orange-400 text-xs font-mono uppercase tracking-wider hidden sm:block">
                 АКТИВЕН
               </span>
             )}

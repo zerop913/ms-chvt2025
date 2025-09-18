@@ -1,4 +1,4 @@
-import { MasterClassStep } from "@/types/masterclass";
+import { MasterClassStep } from "@/types/masterclass-new";
 
 export const masterClassSteps: MasterClassStep[] = [
   {
