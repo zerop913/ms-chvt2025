@@ -37,11 +37,17 @@ export interface MasterClassAnimationState {
   activeExpert: string | null;
 }
 
+export interface ExpertContacts {
+  telegram?: string;
+  email?: string;
+  website?: string;
+}
+
 export interface Expert {
   id: string;
   name: string;
   role: string;
-  specialization: string;
+  contacts?: ExpertContacts;
 }
 
 export interface MasterClassTechnologies {

@@ -7,6 +7,7 @@ interface ExpertCardProps {
   expert: Expert;
   isActive: boolean;
   onHover: (expertId: string | null) => void;
+  onClick: (expert: Expert) => void;
   delay: number;
 }
 
@@ -14,6 +15,7 @@ export default function ExpertCard({
   expert,
   isActive,
   onHover,
+  onClick,
   delay,
 }: ExpertCardProps) {
   const [isVisible, setIsVisible] = useState(false);
@@ -33,6 +35,7 @@ export default function ExpertCard({
       }`}
       onMouseEnter={() => onHover(expert.id)}
       onMouseLeave={() => onHover(null)}
+      onClick={() => onClick(expert)}
     >
       <div
         className={`h-48 sm:h-56 lg:h-64 bg-gradient-to-br from-chvt-black-900 to-chvt-black-800 rounded-lg transition-all duration-300 hover:shadow-xl overflow-hidden ${

@@ -28,25 +28,41 @@ export const masterClassContent: MasterClassContent = {
       id: "varfolomeeva",
       name: "Варфоломеева Полина Вадимовна",
       role: "Эксперт",
-      specialization: "Архитектура медицинских систем",
+      contacts: {
+        telegram: "@xfhxf_2",
+        email: "polinavarfolomeeva90@gmail.com",
+        website: "https://portfolio-varfolomeeva.vercel.app/",
+      },
     },
     {
       id: "smolin",
       name: "Смолин Иван Григорьевич",
       role: "Эксперт",
-      specialization: "Разработка на платформе 1С",
+      contacts: {
+        telegram: "@zerop913",
+        email: "info@ivan-smolin.ru",
+        website: "https://ivan-smolin.ru/",
+      },
     },
     {
       id: "pavlov",
       name: "Павлов Ян Владимирович",
       role: "Эксперт",
-      specialization: "API и интеграционные решения",
+      contacts: {
+        telegram: "@Pure21Byte",
+        email: "yanpavlov.04@mail.ru",
+        website: "#",
+      },
     },
     {
       id: "bogolyubov",
       name: "Боголюбов Антон Андреевич",
       role: "Эксперт",
-      specialization: "Голосовые технологии и ИИ",
+      contacts: {
+        telegram: "@ssaw13",
+        email: "bogolyubovaw13@ya.ru",
+        website: "#",
+      },
     },
   ],
 };

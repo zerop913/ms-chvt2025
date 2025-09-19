@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { masterClassContent } from "../../constants/masterClassContent";
 import { MasterClassAnimationState, Expert } from "../../types/masterclass-new";
 import ExpertCard from "./ExpertCard";
+import ExpertModal from "./ExpertModal";
 import { Users } from "lucide-react";
 
 export default function MasterClassSection() {
@@ -13,6 +14,9 @@ export default function MasterClassSection() {
       isLoaded: false,
       activeExpert: null,
     });
+
+  const [selectedExpert, setSelectedExpert] = useState<Expert | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     setAnimationState((prev: MasterClassAnimationState) => ({
@@ -34,6 +38,16 @@ export default function MasterClassSection() {
       ...prev,
       activeExpert: expertId,
     }));
+  };
+
+  const handleExpertClick = (expert: Expert) => {
+    setSelectedExpert(expert);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedExpert(null);
   };
 
   return (
@@ -492,11 +506,19 @@ export default function MasterClassSection() {
                 expert={expert}
                 isActive={animationState.activeExpert === expert.id}
                 onHover={handleExpertHover}
+                onClick={handleExpertClick}
                 delay={1500 + index * 200}
               />
             ))}
           </div>
         </div>
+
+        {/* Expert Modal */}
+        <ExpertModal
+          expert={selectedExpert}
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+        />
       </div>
     </section>
   );
