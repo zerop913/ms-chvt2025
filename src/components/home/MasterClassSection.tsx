@@ -5,7 +5,7 @@ import { masterClassContent } from "../../constants/masterClassContent";
 import { MasterClassAnimationState, Expert } from "../../types/masterclass-new";
 import ExpertCard from "./ExpertCard";
 import ExpertModal from "./ExpertModal";
-import { Users } from "lucide-react";
+import { Users, BookOpen } from "lucide-react";
 
 export default function MasterClassSection() {
   const [animationState, setAnimationState] =
@@ -468,6 +468,18 @@ export default function MasterClassSection() {
                         </span>
                       </span>
                     </button>
+
+                    <a
+                      href="/docs"
+                      className="group w-full inline-flex items-center justify-center px-4 py-2 lg:px-6 lg:py-3 border border-gray-300 text-gray-700 font-semibold rounded-lg transition-all duration-300 hover:border-chvt-orange-500 hover:text-chvt-orange-600 hover:bg-chvt-orange-50"
+                    >
+                      <span className="flex items-center space-x-2">
+                        <BookOpen className="w-4 h-4 lg:w-5 lg:h-5 transform group-hover:scale-110 transition-transform" />
+                        <span className="text-sm lg:text-base">
+                          Просмотреть документацию
+                        </span>
+                      </span>
+                    </a>
                   </div>
                 </div>
               </div>
