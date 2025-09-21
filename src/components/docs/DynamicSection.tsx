@@ -25,7 +25,16 @@ interface DynamicSectionProps {
   icon: string;
   title: string;
   description?: string;
-  data?: any;
+  data?: unknown;
+}
+
+interface ProcessedData {
+  steps?: { text: string }[];
+  parameters?: { label?: string; name?: string; value?: unknown; description?: string }[];
+  content?: string;
+  code?: string;
+  text?: string;
+  items?: string[];
 }
 
 const iconMap = {
@@ -58,16 +67,20 @@ export function DynamicSection({
   const IconComponent = iconMap[icon as keyof typeof iconMap] || Code;
 
   // Обработка данных для обратной совместимости
-  const processedData = (() => {
-    if (!data) return {};
+  const processedData: ProcessedData = (() => {
+    if (!data) return {} as ProcessedData;
 
     // Если data - это массив, преобразуем в объект с steps
     if (Array.isArray(data)) {
-      return { steps: data.map((item: string) => ({ text: item })) };
+      return { steps: (data as unknown[]).map((item) => ({ text: String(item) })) };
     }
 
-    return data;
+    return data as ProcessedData;
   })();
+
+  const parameters = Array.isArray(processedData.parameters)
+    ? (processedData.parameters as { label?: string; name?: string; value?: unknown; description?: string }[])
+    : undefined;
 
   switch (type) {
     case "stepList":
@@ -75,9 +88,7 @@ export function DynamicSection({
         <div className="mb-6">
           <DocsContentBox icon={IconComponent} title={title}>
             {description && <p className="text-gray-700 mb-4">{description}</p>}
-            {processedData?.steps && (
-              <DocsStepList steps={processedData.steps} />
-            )}
+            {processedData.steps && <DocsStepList steps={processedData.steps} />}
           </DocsContentBox>
         </div>
       );
@@ -88,22 +99,12 @@ export function DynamicSection({
           <DocsContentBox icon={IconComponent} title={title}>
             {description && <p className="text-gray-700 mb-4">{description}</p>}
             <div className="space-y-3">
-              {(processedData?.parameters || processedData)?.map &&
-                (processedData?.parameters || processedData)?.map(
-                  (param: any, index: number) => (
-                    <div
-                      key={index}
-                      className="flex justify-between p-2 bg-gray-50 rounded"
-                    >
-                      <span className="text-gray-700">
-                        {param.label || param.name}:
-                      </span>
-                      <span className="font-mono text-orange-600">
-                        {param.value || param.description}
-                      </span>
-                    </div>
-                  )
-                )}
+              {parameters?.map((p, index) => (
+                <div key={index} className="flex justify-between p-2 bg-gray-50 rounded">
+                  <span className="text-gray-700">{p.label || p.name}:</span>
+                  <span className="font-mono text-orange-600">{String(p.value ?? p.description ?? '')}</span>
+                </div>
+              ))}
             </div>
           </DocsContentBox>
         </div>
@@ -115,7 +116,7 @@ export function DynamicSection({
           <DocsContentBox icon={IconComponent} title={title}>
             {description && <p className="text-gray-700 mb-4">{description}</p>}
             <div className="bg-gray-900 text-gray-100 p-4 rounded-lg font-mono text-sm overflow-x-auto">
-              <pre>{data?.content || data?.code || ""}</pre>
+              <pre>{processedData.content || processedData.code || ""}</pre>
             </div>
           </DocsContentBox>
         </div>
@@ -127,9 +128,7 @@ export function DynamicSection({
         <div className="mb-6">
           <DocsContentBox icon={IconComponent} title={title}>
             {description && <p className="text-gray-700 mb-4">{description}</p>}
-            <div className="text-gray-700">
-              {data?.content || data?.text || ""}
-            </div>
+            <div className="text-gray-700">{processedData.content || processedData.text || ""}</div>
           </DocsContentBox>
         </div>
       );
@@ -140,7 +139,7 @@ export function DynamicSection({
           <DocsContentBox icon={IconComponent} title={title}>
             {description && <p className="text-gray-700 mb-4">{description}</p>}
             <ul className="space-y-3">
-              {data?.items?.map((item: string, index: number) => (
+              {Array.isArray(processedData.items) && processedData.items.map((item: string, index: number) => (
                 <li key={index} className="flex items-start gap-3">
                   <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
                   <span className="text-gray-700">{item}</span>

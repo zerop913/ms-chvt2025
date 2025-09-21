@@ -9,7 +9,7 @@ export interface SectionData {
   icon: string;
   title: string;
   description?: string;
-  data: any;
+  data: unknown;
 }
 
 export const httpServicesPageData = {

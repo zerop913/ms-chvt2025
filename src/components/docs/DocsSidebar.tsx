@@ -17,7 +17,6 @@ import {
   FileText,
   Shield,
   Package,
-  TestTube,
   FolderOpen,
   Play,
   Terminal,
@@ -29,7 +28,7 @@ import { useState } from "react";
 interface NavItem {
   title: string;
   href: string;
-  icon?: React.ComponentType<any>;
+  icon?: React.ComponentType<React.ComponentProps<"svg">>;
   children?: NavItem[];
   badge?: string;
 }
@@ -151,7 +150,6 @@ const navigation: NavItem[] = [
 export default function DocsSidebar() {
   const pathname = usePathname();
   const [expandedSections, setExpandedSections] = useState<string[]>(() => {
-    // Автоматически раскрываем секцию с активной страницей
     const activeSection = navigation.find(
       (section) =>
         section.children?.some((child) => pathname === child.href) ||

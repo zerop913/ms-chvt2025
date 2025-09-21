@@ -3,7 +3,7 @@ export interface DocsSection {
   icon: string;
   title: string;
   description: string;
-  data?: any;
+  data?: unknown;
 }
 
 export interface DocsStep {
